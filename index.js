@@ -3,7 +3,7 @@ const app=express();
 const port=5000;
 const bodyParser=require('body-parser');
 const {User}=require('./models/User');
-
+const {auth}=require('./middleware/auth');
 const cookieParser=require('cookie-parser');
 
 const config=require('./config/key');
@@ -30,7 +30,7 @@ mongoose.connect(config.mongoURI,{
 
 app.get('/', (req, res)=>res.send('Hello world~~~~~~!'))
 
-app.post('/register', (req, res)=>{
+app.post('/api/users/register', (req, res)=>{
     //회원 가입 할 떄 필요한 정보들을 client에서 가져오면
     //그것들을 데이터 베이스에 넣어준다
     
@@ -85,8 +85,20 @@ app.post('/api/users/login', (req, res)=>{
         });
     })
 
-    
+})
 
+app.post('api/users/auth', auth, (req, res)=>{
+    //여기에 들어왔다는 것은 middleware에서 auth를 통과했다는 얘기
+    res.status(200).json({
+        _id:req.user._id,
+        isAdmin:req.user.role===0?false:true,
+        isAuth:true,
+        email:req.user.email,
+        name:req.user.name,
+        lastname:req.user.lastname,
+        role:req.user.role,
+        image:req.user.image,
+    })
 })
 
 app.listen(port, ()=>console.log(`Example app listening on port ${port}!`))
