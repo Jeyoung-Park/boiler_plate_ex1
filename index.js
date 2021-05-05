@@ -87,7 +87,7 @@ app.post('/api/users/login', (req, res)=>{
 
 })
 
-app.post('api/users/auth', auth, (req, res)=>{
+app.post('/api/users/auth', auth, (req, res)=>{
     //여기에 들어왔다는 것은 middleware에서 auth를 통과했다는 얘기
     res.status(200).json({
         _id:req.user._id,
@@ -99,6 +99,18 @@ app.post('api/users/auth', auth, (req, res)=>{
         role:req.user.role,
         image:req.user.image,
     })
+})
+
+app.get('/api/users/logout', auth, (req, res)=>{
+    User.findOneAndUpdate({_id:req.user._id},
+        {token:""}
+        ,(err, user)=>{
+            if(err) return res.json({success:false, err});
+            return res.status(200).send({
+                success:true,
+            })
+        }
+    )
 })
 
 app.listen(port, ()=>console.log(`Example app listening on port ${port}!`))
