@@ -91,7 +91,7 @@ app.post('/api/users/login', (req, res)=>{
 
 })
 
-app.post('/api/users/auth', auth, (req, res)=>{
+app.get('/api/users/auth', auth, (req, res)=>{
     //여기에 들어왔다는 것은 middleware에서 auth를 통과했다는 얘기
     res.status(200).json({
         _id:req.user._id,

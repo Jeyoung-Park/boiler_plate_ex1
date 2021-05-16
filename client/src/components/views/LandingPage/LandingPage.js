@@ -4,7 +4,9 @@ import React,{
 
 import axios from 'axios';
 
-function LandingPage() {
+import {withRouter} from 'react-router-dom';
+
+function LandingPage(props) {
 
     useEffect(() => {
         axios.get('/api/hello')
@@ -12,6 +14,18 @@ function LandingPage() {
             console.log(response.data);
         });
     }, [])
+
+    const onClickHandler=()=>{
+        axios.get('/api/users/logout')
+        .then(response=>{
+            if(response.data.success){
+                props.history.push('/login');
+            }
+            else{
+                alert('로그아웃하는 데 실패하였습니다.');
+            }
+        })
+    }
 
     return (
         <div style={{
@@ -22,8 +36,9 @@ function LandingPage() {
             height:'100%',
         }}>
             <h2>시작 페이지</h2>
+            <button onClick={onClickHandler}>로그아웃</button>
         </div>
     )
 }
 
-export default LandingPage
+export default withRouter(LandingPage);
